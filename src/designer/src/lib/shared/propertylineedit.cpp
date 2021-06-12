@@ -31,6 +31,12 @@
 #include <QtGui/qevent.h>
 #include <QtWidgets/qmenu.h>
 
+#ifdef DMalterlibQtFeatures
+#include <QtCore/QPluginLoader>
+
+#include <AOQT/Designer/AOQTDesigner_Interfaces.h>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
@@ -68,6 +74,15 @@ namespace qdesigner_internal {
 
     void PropertyLineEdit::contextMenuEvent(QContextMenuEvent *event) {
         QMenu  *menu = createStandardContextMenu ();
+
+#ifdef DMalterlibQtFeatures
+        {
+            if (ICMalterlibDesignerPlugin *pHSDesignerPlugin = getMalterlibDesignerPlugin())
+            {
+                pHSDesignerPlugin->adjustStringEditContextMenu(menu, this);
+            }
+        }
+#endif
 
         if (m_wantNewLine) {
             menu->addSeparator();

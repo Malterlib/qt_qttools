@@ -53,12 +53,25 @@
 
 #include <QtDesigner/QDesignerComponents>
 
+#ifdef DMalterlibQtFeatures
+#include <AOQT/Designer/AOQTDesigner_Interfaces.h>
+
+#include <AOCC/AOLocalizationUtil.h>
+#include <AOQT/Interop/AOQT_Translator.h>
+#include <AOQT/Interface/AOQT_Style.h>
+
+NAOQT::CStyle *fg_CreateAOQtStyle();
+#endif
+
 QT_BEGIN_NAMESPACE
 
 static const char *designerApplicationName = "Designer";
 static const char designerDisplayName[] = "Qt Designer";
 static const char *designerWarningPrefix = "Designer: ";
 static QtMessageHandler previousMessageHandler = nullptr;
+#ifdef DMalterlibQtFeatures
+extern NTranslate::CLocalizationEnvironment g_LocalizationEnv;
+#endif
 
 static void designerMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -77,6 +90,17 @@ QDesigner::QDesigner(int &argc, char **argv)
       m_client(nullptr),
       m_workbench(0), m_suppressNewFormShow(false)
 {
+#ifdef DMalterlibQtFeatures
+    m_pTranslator = DNew NAOQT::CTranslator(*g_LocalizationEnv.f_GetTranslations(), this);
+    QApplication::installTranslator(m_pTranslator);
+
+    NAOQT::CStyle *pStyle = fg_CreateAOQtStyle();
+
+    m_pSystem = fg_Explicit(NAOQT::CSystem::fs_Create(this, pStyle, *g_LocalizationEnv.f_GetTranslations(), mp_Collation));
+
+    getMalterlibDesignerPlugin();
+#endif
+
     setOrganizationName(QStringLiteral("QtProject"));
     QGuiApplication::setApplicationDisplayName(QLatin1String(designerDisplayName));
     setApplicationName(QLatin1String(designerApplicationName));
