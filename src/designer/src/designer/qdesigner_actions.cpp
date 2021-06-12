@@ -99,6 +99,10 @@
 #include <QtCore/qscopedpointer.h>
 #include <QtXml/qdom.h>
 
+#ifdef DMalterlibQtFeatures
+#include <AOQT/Designer/AOQTDesigner_Interfaces.h>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 using namespace qdesigner_internal;

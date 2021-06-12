@@ -32,6 +32,12 @@
 #include <QtCore/qpointer.h>
 #include <QtWidgets/qapplication.h>
 
+#ifdef DMalterlibQtFeatures
+#include <Mib/Core/Core>
+#include <AOCC/AOLocalizationUtil.h>
+#include <AOQT/Interop/AOQT_System.h>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 #define qDesigner \
@@ -90,6 +96,13 @@ private:
     QString m_initializationErrors;
     QString m_lastErrorMessage;
     bool m_suppressNewFormShow;
+
+#ifdef DMalterlibQtFeatures
+    TCUniquePointer<NAOQT::CSystem> m_pSystem;
+
+    QTranslator *m_pTranslator;
+    NTranslate::CCollation mp_Collation;
+#endif
 };
 
 QT_END_NAMESPACE
