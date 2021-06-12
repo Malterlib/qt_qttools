@@ -8,12 +8,31 @@
 
 #include <stdlib.h>
 
+#ifdef DMalterlibQtFeatures
+#include <Mib/Core/Core>
+#include <AOCC/AOLocalizationUtil.h>
+
+NTranslate::CLocalizationEnvironment g_LocalizationEnv;
+extern char const *gc_ProjectName;
+#endif
+
 QT_USE_NAMESPACE
 
 static const char rhiBackEndVar[] = "QSG_RHI_BACKEND";
 
 int main(int argc, char *argv[])
 {
+#ifdef DMalterlibQtFeatures
+    g_LocalizationEnv.f_LoadExternal
+        (
+            NFile::CFile::fs_GetPath(CStr(DMibPFile)) + "../../../../../../../.."
+            , gc_ProjectName
+            , nullptr
+            , false
+            , false
+        )
+    ;
+#endif
     // Enable the QWebEngineView, QQuickWidget plugins on Windows.
     if (QOperatingSystemVersion::currentType() == QOperatingSystemVersion::Windows
         && !qEnvironmentVariableIsSet(rhiBackEndVar)) {

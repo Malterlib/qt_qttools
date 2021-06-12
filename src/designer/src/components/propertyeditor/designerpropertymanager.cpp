@@ -96,11 +96,13 @@ void TranslatablePropertyManager<PropertySheetValue>::initialize(QtVariantProper
         property->addSubProperty(disambiguation);
     }
 
+#ifndef DMalterlibQtFeatures
     QtVariantProperty *comment = m->addProperty(QMetaType::QString, DesignerPropertyManager::tr("comment"));
     comment->setValue(value.comment());
     m_valueToComment.insert(property, comment);
     m_commentToValue.insert(comment, property);
     property->addSubProperty(comment);
+#endif
 
     if (DesignerPropertyManager::useIdBasedTranslations()) {
         QtVariantProperty *id = m->addProperty(QMetaType::QString, DesignerPropertyManager::tr("id"));
@@ -170,6 +172,51 @@ bool TranslatablePropertyManager<PropertySheetValue>::destroy(QtProperty *subPro
     }
     return false;
 }
+
+#ifdef DMalterlibQtFeatures
+template<>
+int TranslatablePropertyManager<PropertySheetStringValue>::valueChanged(QtVariantPropertyManager *m,
+                                                                        QtProperty *propertyIn,
+                                                                        const QVariant &value)
+{
+    if (QtProperty *property = m_translatableToValue.value(propertyIn, 0)) {
+        const PropertySheetStringValue oldValue = m_values.value(property);
+        PropertySheetStringValue newValue = oldValue;
+        newValue.setTranslatable(value.toBool());
+        if (newValue != oldValue) {
+            m->variantProperty(property)->setValue(QVariant::fromValue(newValue));
+            return DesignerPropertyManager::Changed;
+        }
+        return DesignerPropertyManager::Unchanged;
+    }
+    if (QtProperty *property = m_commentToValue.value(propertyIn)) {
+        const PropertySheetStringValue oldValue = m_values.value(property);
+        PropertySheetStringValue newValue = oldValue;
+        newValue.setComment(value.toString());
+        if (newValue != oldValue) {
+            m->variantProperty(property)->setValue(QVariant::fromValue(newValue));
+            return DesignerPropertyManager::Changed;
+        }
+        return DesignerPropertyManager::Unchanged;
+    }
+    if (QtProperty *property = m_disambiguationToValue.value(propertyIn, 0)) {
+        const PropertySheetStringValue oldValue = m_values.value(property);
+        PropertySheetStringValue newValue = oldValue;
+        newValue.setDisambiguation(value.toString());
+        {
+            QByteArray AsciiStr = value.toString().toLatin1();
+            newValue.setValue(QApplication::translate(
+                    "", "", AsciiStr.data())); // Malterlib localization integration.
+        }
+        if (newValue != oldValue) {
+            m->variantProperty(property)->setValue(QVariant::fromValue(newValue));
+            return DesignerPropertyManager::Changed;
+        }
+        return DesignerPropertyManager::Unchanged;
+    }
+    return DesignerPropertyManager::NoMatch;
+}
+#endif
 
 template <class PropertySheetValue>
 int TranslatablePropertyManager<PropertySheetValue>::valueChanged(QtVariantPropertyManager *m,

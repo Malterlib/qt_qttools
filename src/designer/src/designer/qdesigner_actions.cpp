@@ -81,6 +81,10 @@
 
 #include <optional>
 
+#ifdef DMalterlibQtFeatures
+#include <AOQT/Designer/AOQTDesigner_Interfaces.h>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
