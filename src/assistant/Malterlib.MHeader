@@ -1,0 +1,15 @@
+
+%Repository "qt_qlitehtml"
+{
+	Repository
+	{
+		Submodule false
+		Type "External"
+		UpdateSubmodules true
+		Location "qlitehtml"->MakeAbsolute()
+		Remotes =+ {Name: "upstream", URL: "https://code.qt.io/playground/qlitehtml.git", Write: false}
+		DefaultUpstreamBranch "master"
+	}
+}
+
+Import "qlitehtml/Malterlib.MHeader"
