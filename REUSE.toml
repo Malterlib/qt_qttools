@@ -161,6 +161,8 @@ comment = ["reuse ignore or have trouble reading some of those webxml or html fi
 SPDX-FileCopyrightText = "Copyright (C) 2016 The Qt Company Ltd."
 SPDX-License-Identifier = "LicenseRef-Qt-Commercial OR GPL-3.0-only"
 
-
-
-
+[[annotations]]
+path = ["src/assistant/External.MRepo"]
+precedence = "override"
+SPDX-FileCopyrightText = "Unbroken AB"
+SPDX-License-Identifier = "Apache-2.0 WITH LLVM-exception"
