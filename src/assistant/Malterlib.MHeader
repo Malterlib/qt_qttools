@@ -10,6 +10,9 @@
 		UpdateSubmodules true
 		Location "qlitehtml"->MakeAbsolute()
 		Remotes =+ {Name: "upstream", URL: "https://code.qt.io/playground/qlitehtml.git", Write: false}
+		{
+			!!MalterlibAddUpstreams true
+		}
 		DefaultUpstreamBranch "master"
 	}
 }
